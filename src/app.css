@@ -1,1 +1,12 @@
 @import 'tailwindcss';
+
+@theme {
+	--font-spacemono: 'Space Mono', var(--font-mono);
+
+	--color-strongcyan: hsl(172, 67%, 45%);
+	--color-verydarkcyan: hsl(183, 100%, 15%);
+	--color-darkgrayishcyan: hsl(186, 14%, 43%);
+	--color-grayishcyan: hsl(184, 14%, 56%);
+	--color-lightgrayishcyan: hsl(185, 41%, 84%);
+	--color-verylightgrayishcyan: hsl(189, 41%, 97%);
+}
