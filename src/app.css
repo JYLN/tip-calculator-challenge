@@ -3,10 +3,23 @@
 @theme {
 	--font-spacemono: 'Space Mono', var(--font-mono);
 
+	--color-*: initial;
 	--color-strongcyan: hsl(172, 67%, 45%);
+	--color-lightstrongcyan: hsl(173, 61%, 77%);
 	--color-verydarkcyan: hsl(183, 100%, 15%);
 	--color-darkgrayishcyan: hsl(186, 14%, 43%);
 	--color-grayishcyan: hsl(184, 14%, 56%);
 	--color-lightgrayishcyan: hsl(185, 41%, 84%);
 	--color-verylightgrayishcyan: hsl(189, 41%, 97%);
+	--color-white: hsl(0, 0%, 100%);
+}
+
+@layer base {
+	body {
+		@apply bg-lightgrayishcyan font-spacemono text-darkgrayishcyan flex min-h-screen flex-col items-center justify-center gap-10.5 pt-10.5 font-bold md:pb-10.5;
+	}
+}
+
+@utility appearance-textfield {
+	appearance: textfield;
 }
