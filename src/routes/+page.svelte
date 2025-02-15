@@ -88,10 +88,10 @@
 						type="number"
 						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan invalid:outline-orange block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl invalid:outline-2 focus-visible:outline-2"
 						placeholder="0"
-						min="0"
+						min="1"
 						step="0.01"
 						required
-						aria-invalid={!billTotal}
+						aria-invalid={!billTotal || billTotal < 0}
 						onchange={(e) => {
 							if (e.currentTarget.valueAsNumber < 0) {
 								billTotal = 0;
@@ -132,6 +132,7 @@
 						placeholder="Custom"
 						min="0"
 						step="0.01"
+						aria-invalid={customTipPercent === undefined && customTipPercent! < 0}
 						onfocus={() => {
 							if (tipPresets.includes(tipPercent as number)) {
 								setTip(0);
@@ -164,9 +165,9 @@
 						bind:value={people}
 						id="people"
 						type="number"
-						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl focus-visible:outline-2"
+						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan invalid:outline-orange block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl invalid:outline-2 focus-visible:outline-2"
 						placeholder="0"
-						min="0"
+						min="1"
 						required
 						aria-invalid={!people || people < 0}
 						onchange={(e) => {
