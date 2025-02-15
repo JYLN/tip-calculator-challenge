@@ -19,7 +19,7 @@
 	});
 
 	let totalPerPerson = $derived.by(() => {
-		if (!billTotal || !people || !tipAmountPerPerson) return 0;
+		if (!billTotal || !people || tipAmountPerPerson < 0) return 0;
 		return billTotal / people + tipAmountPerPerson;
 	});
 
@@ -70,8 +70,13 @@
 	<div class="grid max-w-[920px] gap-8 rounded-t-3xl bg-white p-8 md:grid-cols-2 md:rounded-b-3xl">
 		<form class="grid gap-8">
 			<div class="grid">
-				<label for="bill">Bill</label>
-				<div class="relative mt-2">
+				<label for="bill" class="col-start-1 col-end-1 row-start-1 row-end-1">Bill</label>
+				<span class="text-orange col-start-2 col-end-2 row-start-1 row-end-1 ml-auto">
+					{#if !billTotal}
+						Can't be zero
+					{/if}
+				</span>
+				<div class="relative col-span-2 mt-2">
 					<img
 						src="/images/icon-dollar.svg"
 						alt=""
@@ -81,16 +86,29 @@
 						bind:value={billTotal}
 						id="bill"
 						type="number"
-						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl focus-visible:outline-2"
+						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan invalid:outline-orange block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl invalid:outline-2 focus-visible:outline-2"
 						placeholder="0"
 						min="0"
 						step="0.01"
 						required
+						aria-invalid={!billTotal}
+						onchange={(e) => {
+							if (e.currentTarget.valueAsNumber < 0) {
+								billTotal = 0;
+							}
+						}}
 					/>
 				</div>
 			</div>
 			<div>
-				<p>Select Tip %</p>
+				<div class="flex justify-between">
+					<p>Select Tip %</p>
+					<span class="text-orange">
+						{#if (!tipPercent && customTipPercent === undefined) || (customTipPercent && customTipPercent < 0)}
+							Select a tip
+						{/if}
+					</span>
+				</div>
 				<div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-x-3.5">
 					{#each tipPresets as tip}
 						<button
@@ -110,7 +128,7 @@
 					<input
 						bind:value={customTipPercent}
 						type="number"
-						class="appearance-textfield bg-verylightgrayishcyan text-verydarkcyan caret-strongcyan focus-visible:border-strongcyan size-full rounded-[5px] px-4 text-right text-2xl placeholder:text-center focus-visible:border-2 focus-visible:outline-none"
+						class="appearance-textfield bg-verylightgrayishcyan text-verydarkcyan invalid:border-orange caret-strongcyan focus-visible:border-strongcyan size-full rounded-[5px] px-4 text-right text-2xl placeholder:text-center invalid:border-2 focus-visible:border-2 focus-visible:outline-none"
 						placeholder="Custom"
 						min="0"
 						step="0.01"
@@ -119,12 +137,24 @@
 								setTip(0);
 							}
 						}}
+						onchange={(e) => {
+							if (e.currentTarget.valueAsNumber < 0) {
+								customTipPercent = 0;
+							}
+						}}
 					/>
 				</div>
 			</div>
-			<div>
-				<label for="people">Number of People</label>
-				<div class="relative mt-2">
+			<div class="grid">
+				<label for="people" class="col-start-1 col-end-1 row-start-1 row-end-1">
+					Number of People
+				</label>
+				<span class="text-orange col-start-2 col-end-2 row-start-1 row-end-1 ml-auto">
+					{#if !people}
+						Can't be zero
+					{/if}
+				</span>
+				<div class="relative col-span-2 mt-2">
 					<img
 						src="/images/icon-person.svg"
 						alt=""
@@ -138,6 +168,12 @@
 						placeholder="0"
 						min="0"
 						required
+						aria-invalid={!people || people < 0}
+						onchange={(e) => {
+							if (e.currentTarget.valueAsNumber < 0) {
+								people = 0;
+							}
+						}}
 					/>
 				</div>
 			</div>
