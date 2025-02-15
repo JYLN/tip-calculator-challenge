@@ -1,6 +1,62 @@
 <script lang="ts">
 	import '@fontsource/space-mono/700.css';
+	import { expoInOut } from 'svelte/easing';
+	import { Tween } from 'svelte/motion';
 	import '../app.css';
+
+	const tipPresets = [5, 10, 15, 25, 50];
+
+	let billTotal: number | undefined = $state(undefined);
+	let tipPercent: number | undefined = $state(undefined);
+	let customTipPercent: number | undefined = $state(undefined);
+	let people: number | undefined = $state(undefined);
+
+	let tipAmountPerPerson = $derived.by(() => {
+		const selectedTip = customTipPercent ?? tipPercent;
+
+		if (!billTotal || !selectedTip || !people) return 0;
+		return (billTotal * (selectedTip / 100)) / people;
+	});
+
+	let totalPerPerson = $derived.by(() => {
+		if (!billTotal || !people || !tipAmountPerPerson) return 0;
+		return billTotal / people + tipAmountPerPerson;
+	});
+
+	const setTip = (percent: number) => {
+		customTipPercent = undefined;
+		tipPercent = percent;
+	};
+
+	const reset = () => {
+		billTotal = undefined;
+		tipPercent = undefined;
+		customTipPercent = undefined;
+		people = undefined;
+		tweenedTipAmount.set(0);
+		tweenedTotal.set(0);
+	};
+
+	const tweenedTipAmount = new Tween(0, {
+		delay: 200,
+		duration: 400,
+		easing: expoInOut
+	});
+
+	const tweenedTotal = new Tween(0, {
+		delay: 400,
+		duration: 600,
+		easing: expoInOut
+	});
+
+	$effect(() => {
+		tweenedTipAmount.set(tipAmountPerPerson);
+		tweenedTotal.set(totalPerPerson);
+		return () => {
+			tweenedTipAmount.set(0);
+			tweenedTotal.set(0);
+		};
+	});
 </script>
 
 <svelte:head>
@@ -22,94 +78,48 @@
 						class="absolute top-1/2 left-4 -translate-y-1/2"
 					/>
 					<input
+						bind:value={billTotal}
 						id="bill"
 						type="number"
 						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl focus-visible:outline-2"
 						placeholder="0"
 						min="0"
+						step="0.01"
+						required
 					/>
 				</div>
 			</div>
 			<div>
 				<p>Select Tip %</p>
 				<div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-x-3.5">
-					<div class="group relative">
-						<input id="tip-5" class="absolute appearance-none" type="radio" name="tip" value="5" />
-						<label
-							for="tip-5"
-							class="bg-verydarkcyan hover:bg-lightstrongcyan hover:text-verydarkcyan group-has-checked:bg-strongcyan group-has-checked:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl text-white transition-colors duration-300 ease-in-out"
+					{#each tipPresets as tip}
+						<button
+							class={[
+								' hover:bg-lightstrongcyan hover:text-verydarkcyan focus:bg-strongcyan cursor-pointer rounded-[5px] p-2 text-2xl  transition-colors duration-300 ease-in-out',
+								tip === tipPercent
+									? 'bg-strongcyan text-verydarkcyan'
+									: 'bg-verydarkcyan text-white'
+							]}
+							onclick={() => setTip(tip)}
+							type="button"
 						>
-							5%
-						</label>
-					</div>
-					<div class="group relative">
-						<input
-							id="tip-10"
-							class="absolute appearance-none"
-							type="radio"
-							name="tip"
-							value="10"
-						/>
-						<label
-							for="tip-10"
-							class="bg-verydarkcyan hover:bg-lightstrongcyan hover:text-verydarkcyan group-has-checked:bg-strongcyan group-has-checked:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl text-white transition-colors duration-300 ease-in-out"
-						>
-							10%
-						</label>
-					</div>
-					<div class="group relative">
-						<input
-							id="tip-15"
-							class="absolute appearance-none"
-							type="radio"
-							name="tip"
-							value="15"
-						/>
-						<label
-							for="tip-15"
-							class="bg-verydarkcyan hover:bg-lightstrongcyan hover:text-verydarkcyan group-has-checked:bg-strongcyan group-has-checked:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl text-white transition-colors duration-300 ease-in-out"
-						>
-							15%
-						</label>
-					</div>
-					<div class="group relative">
-						<input
-							id="tip-25"
-							class="absolute appearance-none"
-							type="radio"
-							name="tip"
-							value="25"
-						/>
-						<label
-							for="tip-25"
-							class="bg-verydarkcyan hover:bg-lightstrongcyan hover:text-verydarkcyan group-has-checked:bg-strongcyan group-has-checked:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl text-white transition-colors duration-300 ease-in-out"
-						>
-							25%
-						</label>
-					</div>
-					<div class="group relative">
-						<input
-							id="tip-50"
-							class="absolute appearance-none"
-							type="radio"
-							name="tip"
-							value="50"
-						/>
-						<label
-							for="tip-50"
-							class="bg-verydarkcyan hover:bg-lightstrongcyan hover:text-verydarkcyan group-has-checked:bg-strongcyan group-has-checked:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl text-white transition-colors duration-300 ease-in-out"
-						>
-							50%
-						</label>
-					</div>
-					<div>
-						<input
-							type="number"
-							class="appearance-textfield bg-verylightgrayishcyan text-verydarkcyan caret-strongcyan focus-visible:border-strongcyan size-full rounded-[5px] px-4 text-right text-2xl placeholder:text-center focus-visible:border-2 focus-visible:outline-none"
-							placeholder="Custom"
-							min="0"
-						/>
-					</div>
+							{tip}%
+						</button>
+					{/each}
+
+					<input
+						bind:value={customTipPercent}
+						type="number"
+						class="appearance-textfield bg-verylightgrayishcyan text-verydarkcyan caret-strongcyan focus-visible:border-strongcyan size-full rounded-[5px] px-4 text-right text-2xl placeholder:text-center focus-visible:border-2 focus-visible:outline-none"
+						placeholder="Custom"
+						min="0"
+						step="0.01"
+						onfocus={() => {
+							if (tipPresets.includes(tipPercent as number)) {
+								setTip(0);
+							}
+						}}
+					/>
 				</div>
 			</div>
 			<div>
@@ -121,16 +131,19 @@
 						class="absolute top-1/2 left-4 -translate-y-1/2"
 					/>
 					<input
+						bind:value={people}
 						id="people"
 						type="number"
 						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl focus-visible:outline-2"
 						placeholder="0"
+						min="0"
+						required
 					/>
 				</div>
 			</div>
 		</form>
 		<div
-			class="bg-verydarkcyan flex flex-col justify-between rounded-2xl p-6 pt-10 md:px-10 md:py-14"
+			class="bg-verydarkcyan flex flex-col justify-between rounded-2xl p-6 pt-10 md:px-10 md:pt-14 md:pb-10"
 		>
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
@@ -138,18 +151,24 @@
 						<p class="text-white">Tip Amount</p>
 						<p class="text-grayishcyan text-sm">/ person</p>
 					</div>
-					<output class="text-strongcyan text-3xl md:text-5xl">$0.00</output>
+					<output class="text-strongcyan text-3xl md:text-5xl">
+						${tweenedTipAmount.current.toFixed(2)}
+					</output>
 				</div>
 				<div class="flex items-center justify-between">
 					<div>
 						<p class="text-white">Total</p>
 						<p class="text-grayishcyan text-sm">/ person</p>
 					</div>
-					<output class="text-strongcyan text-3xl md:text-5xl">$0.00</output>
+					<output class="text-strongcyan text-3xl md:text-5xl">
+						${tweenedTotal.current.toFixed(2)}
+					</output>
 				</div>
 			</div>
 			<button
-				class="bg-strongcyan text-verydarkcyan hover:bg-lightstrongcyan focus:bg-strongcyan mt-9 cursor-pointer rounded-[5px] py-2 text-xl uppercase transition-colors duration-300 ease-in-out"
+				class="bg-strongcyan text-verydarkcyan hover:bg-lightstrongcyan focus:bg-strongcyan disabled:bg-muteddarkcyan mt-9 cursor-pointer rounded-[5px] py-2 text-xl uppercase transition-colors duration-300 ease-in-out disabled:cursor-not-allowed"
+				onclick={() => reset()}
+				disabled={!billTotal && !tipPercent && !customTipPercent && !people}
 			>
 				Reset
 			</button>
