@@ -86,6 +86,7 @@
 						bind:value={billTotal}
 						id="bill"
 						type="number"
+						name="bill"
 						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan invalid:outline-orange block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl invalid:outline-2 focus-visible:outline-2"
 						placeholder="0"
 						min="1"
@@ -111,23 +112,34 @@
 				</div>
 				<div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-x-3.5">
 					{#each tipPresets as tip}
-						<button
-							class={[
-								' hover:bg-lightstrongcyan hover:text-verydarkcyan focus:bg-strongcyan cursor-pointer rounded-[5px] p-2 text-2xl  transition-colors duration-300 ease-in-out',
-								tip === tipPercent
-									? 'bg-strongcyan text-verydarkcyan'
-									: 'bg-verydarkcyan text-white'
-							]}
-							onclick={() => setTip(tip)}
-							type="button"
-						>
-							{tip}%
-						</button>
+						<div class="group relative">
+							<input
+								id="tip-{tip}"
+								type="radio"
+								name="tip"
+								value={tip}
+								onclick={() => setTip(tip)}
+								checked={tip === tipPercent}
+								class="peer absolute appearance-none"
+							/>
+							<label
+								for="tip-{tip}"
+								class={[
+									'group-has-focus:bg-strongcyan! hover:bg-lightstrongcyan hover:text-verydarkcyan block cursor-pointer rounded-[5px] p-2 text-center text-2xl transition-colors duration-300 ease-in-out',
+									tip === tipPercent
+										? 'bg-strongcyan text-verydarkcyan'
+										: 'bg-verydarkcyan text-white'
+								]}
+							>
+								{tip}%
+							</label>
+						</div>
 					{/each}
 
 					<input
 						bind:value={customTipPercent}
 						type="number"
+						name="custom-tip"
 						class="appearance-textfield bg-verylightgrayishcyan text-verydarkcyan invalid:border-orange caret-strongcyan focus-visible:border-strongcyan size-full rounded-[5px] px-4 text-right text-2xl placeholder:text-center invalid:border-2 focus-visible:border-2 focus-visible:outline-none"
 						placeholder="Custom"
 						min="0"
@@ -165,6 +177,7 @@
 						bind:value={people}
 						id="people"
 						type="number"
+						name="people"
 						class="bg-verylightgrayishcyan focus-visible:outline-strongcyan appearance-textfield text-verydarkcyan caret-strongcyan invalid:outline-orange block w-full rounded-[5px] py-1.5 pr-4 pl-10 text-right text-2xl invalid:outline-2 focus-visible:outline-2"
 						placeholder="0"
 						min="1"
