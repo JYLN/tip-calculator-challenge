@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '@fontsource/space-mono/700.css';
-	import { expoInOut } from 'svelte/easing';
+	import { cubicInOut, expoInOut } from 'svelte/easing';
 	import { Tween } from 'svelte/motion';
 	import '../app.css';
 
@@ -46,7 +46,7 @@
 	const tweenedTotal = new Tween(0, {
 		delay: 400,
 		duration: 600,
-		easing: expoInOut
+		easing: cubicInOut
 	});
 
 	$effect(() => {
