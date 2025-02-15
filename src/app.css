@@ -14,6 +14,8 @@
 	--color-verylightgrayishcyan: hsl(189, 41%, 97%);
 	--color-orange: hsl(13, 70%, 61%);
 	--color-white: hsl(0, 0%, 100%);
+
+	--shadow-card: 0 32px 43px 0 hsla(185, 38%, 50%, 0.2);
 }
 
 @layer base {

@@ -67,7 +67,9 @@
 	<img src="/images/logo.svg" alt="Splitter App" />
 </header>
 <main>
-	<div class="grid max-w-[920px] gap-8 rounded-t-3xl bg-white p-8 md:grid-cols-2 md:rounded-b-3xl">
+	<div
+		class="shadow-card grid max-w-[920px] gap-8 rounded-t-3xl bg-white p-8 md:grid-cols-2 md:gap-12 md:rounded-b-3xl md:p-12 md:pr-8"
+	>
 		<form class="grid gap-8">
 			<div class="grid">
 				<label for="bill" class="col-start-1 col-end-1 row-start-1 row-end-1">Bill</label>
